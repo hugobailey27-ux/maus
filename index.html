@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maus: Mask Overlay Scroll</title>
+  <title>Maus Visual Mask Overlay</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,236 +13,60 @@
 
     body {
       background-color: #0d0d0d;
-      color: #f0f0f0;
-      font-family: 'Courier New', Courier, monospace;
-      line-height: 1.6;
-    }
-
-    /* Fixed Header */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #000;
-      border-bottom: 2px solid #fff;
-      padding: 1rem;
-      text-align: center;
-      z-index: 100;
-    }
-
-    header h1 {
-      font-size: 1.4rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    header p {
-      font-size: 0.8rem;
-      color: #aaa;
-    }
-
-    /* Scroll Container */
-    .scroll-container {
-      margin-top: 100px;
-      padding: 2rem 1rem 10rem 1rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Individual Character Stage */
-    .character-stage {
-      min-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid #fff;
-      background: #111;
-      margin-bottom: 4rem;
-      padding: 2rem;
-      position: relative;
-    }
-
-    .character-stage h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.2rem;
-      text-transform: uppercase;
-    }
-
-    .nationality-tag {
-      font-size: 0.8rem;
-      color: #888;
-      letter-spacing: 1.5px;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Portrait & Mask Overlay Box */
-    .portrait-box {
-      position: relative;
-      width: 220px;
-      height: 220px;
-      border: 2px solid #fff;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100vh;
       overflow: hidden;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Base Human Silhouette Layer */
-    .human-face {
-      font-size: 5rem;
-      z-index: 1;
-      transition: opacity 0.3s ease;
-    }
-
-    /* Animal Mask Layer (Glides down on scroll) */
-    .animal-mask {
-      position: absolute;
-      top: -100%; /* Hidden above frame initially */
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      color: #000;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
+      font-family: monospace;
+    }
+
+    /* Outer Frame Container */
+    .app-viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Fixed Center Target (Where the mask aligns with human face) */
+    .center-frame {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border: 4px solid #ffffff;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Fixed Human Face Silhouette */
+    .human-face {
+      font-size: 8rem;
+      user-select: none;
       z-index: 2;
-      transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.27);
     }
 
-    .animal-mask .icon {
-      font-size: 4rem;
-    }
-
-    .animal-mask .mask-label {
-      font-weight: bold;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-      letter-spacing: 1px;
-    }
-
-    /* Active State: Mask drops down onto face */
-    .character-stage.masked .animal-mask {
+    /* Horizontal Scroll Ribbon for Animal Masks */
+    .mask-scroll-ribbon {
+      position: absolute;
       top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      z-index: 10;
+      /* Padding lets the first and last mask snap dead-center */
+      padding-left: calc(50vw - 130px);
+      padding-right: calc(50vw - 130px);
     }
 
-    .quote-text {
-      text-align: center;
-      font-size: 0.85rem;
-      font-style: italic;
-      color: #ddd;
-      max-width: 500px;
-      border-top: 1px dashed #444;
-      padding-top: 1rem;
-    }
-
-    .indicator {
-      font-size: 0.75rem;
-      color: #666;
-      margin-top: 1rem;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>MAUS: MASK OVERLAY INTERFACE</h1>
-    <p>↓ Scroll down to drop animal masks onto human identities</p>
-  </header>
-
-  <main class="scroll-container">
-
-    <section class="character-stage">
-      <h2>Vladek Spiegelman</h2>
-      <p class="nationality-tag">JEWISH IDENTITY</p>
-      
-      <div class="portrait-box">
-        <div class="human-face">👨</div>
-        <div class="animal-mask">
-          <span class="icon">🐭</span>
-          <span class="mask-label">MOUSE MASK</span>
-        </div>
-      </div>
-
-      <p class="quote-text">"To speak of Auschwitz was impossible... Spiegelman uses the mouse to symbolize how victims were dehumanized and hunted as vermin."</p>
-      <p class="indicator">[ Mask applied on scroll view ]</p>
-    </section>
-
-    <section class="character-stage">
-      <h2>German Officers</h2>
-      <p class="nationality-tag">GERMAN OCCUPIERS</p>
-      
-      <div class="portrait-box">
-        <div class="human-face">👮</div>
-        <div class="animal-mask">
-          <span class="icon">🐱</span>
-          <span class="mask-label">CAT MASK</span>
-        </div>
-      </div>
-
-      <p class="quote-text">"Rendered as predatory cats chasing mice, emphasizing systemic violence and predator-versus-prey power dynamics."</p>
-      <p class="indicator">[ Mask applied on scroll view ]</p>
-    </section>
-
-    <section class="character-stage">
-      <h2>Polish Citizens</h2>
-      <p class="nationality-tag">POLISH BYSTANDERS</p>
-      
-      <div class="portrait-box">
-        <div class="human-face">👨‍🌾</div>
-        <div class="animal-mask">
-          <span class="icon">🐷</span>
-          <span class="mask-label">PIG MASK</span>
-        </div>
-      </div>
-
-      <p class="quote-text">"Vladek literally wears a pig mask strapped around his neck to blend into public streets and escape detection."</p>
-      <p class="indicator">[ Mask applied on scroll view ]</p>
-    </section>
-
-    <section class="character-stage">
-      <h2>American Soldiers</h2>
-      <p class="nationality-tag">ALLIED LIBERATORS</p>
-      
-      <div class="portrait-box">
-        <div class="human-face">🪖</div>
-        <div class="animal-mask">
-          <span class="icon">🐶</span>
-          <span class="mask-label">DOG MASK</span>
-        </div>
-      </div>
-
-      <p class="quote-text">"Depicted as friendly, distinct dog breeds arriving at camp liberation, representing protection and alliance."</p>
-      <p class="indicator">[ Mask applied on scroll view ]</p>
-    </section>
-
-    <section class="character-stage">
-      <h2>Françoise Mouly</h2>
-      <p class="nationality-tag">FRENCH CONVERT</p>
-      
-      <div class="portrait-box">
-        <div class="human-face">👩</div>
-        <div class="animal-mask">
-          <span class="icon">🐸</span>
-          <span class="mask-label">FROG MASK</span>
-        </div>
-      </div>
-
-      <p class="quote-text">"Should I convert to a mouse so the metaphor stays clean?" — Exposes the absurd limits of categorizing human beings strictly by nationality.</p>
-      <p class="indicator">[ Mask applied on scroll view ]</p>
-    </section>
-
-  </main>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const stages = document.querySelectorAll(".character-stage");
-
-      // Trigger mask overlay when portrait enters middle of screen
-      const observer = new IntersectionObserver((entries
+    /* Hide scrollbar for clean visual presentation */

@@ -3,99 +3,198 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maus: Bleeding History</title>
+  <title>Maus: The Mask & Identity Interface</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: #0d0d0d; color: #f0f0f0; font-family: 'Courier New', Courier, monospace; line-height: 1.6; }
-    .site-header { text-align: center; padding: 1.5rem 1rem; border-bottom: 3px solid #f0f0f0; background-color: #000; }
-    .site-header h1 { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; }
-    .subtitle { font-size: 0.85rem; color: #a0a0a0; margin-top: 0.4rem; }
-    .app-container { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; }
-    .timeline-left { padding: 1.5rem; border-right: 2px dashed #444; }
-    .timeline-left h2 { font-size: 1rem; margin-bottom: 1.5rem; color: #888; border-bottom: 1px solid #444; padding-bottom: 0.5rem; }
-    .narrative-card { background: #1a1a1a; border: 2px solid #f0f0f0; padding: 1.25rem; margin-bottom: 6rem; transition: all 0.3s ease; position: relative; }
-    .narrative-card.active { background: #2a2a2a; border-color: #ffffff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-    .year-badge { position: absolute; top: -12px; right: 15px; background: #f0f0f0; color: #000; font-weight: bold; padding: 2px 8px; font-size: 0.75rem; }
-    .narrative-card h3 { margin-bottom: 0.5rem; text-transform: uppercase; font-size: 1.1rem; }
-    .instruction { margin-top: 0.8rem; font-size: 0.75rem; color: #888; font-style: italic; }
-    .timeline-right { padding: 1.5rem; position: sticky; top: 0; height: 80vh; display: flex; align-items: center; justify-content: center; background: #050505; }
-    .memory-content { border: 4px solid #fff; padding: 1.5rem; width: 100%; max-width: 400px; background-color: #000; text-align: center; transition: opacity 0.3s ease; }
-    .memory-tag { font-size: 0.7rem; letter-spacing: 2px; color: #888; display: block; margin-bottom: 0.8rem; }
-    .memory-illustration { height: 140px; border: 2px solid #fff; margin: 1rem 0; display: flex; align-items: center; justify-content: center; background-color: #111; }
-    .illustration-text { font-weight: bold; letter-spacing: 1px; background: #000; padding: 0.4rem; font-size: 0.85rem; }
-    @media (max-width: 600px) { .app-container { grid-template-columns: 1fr; } .timeline-right { position: relative; height: auto; } }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0d0d0d;
+      color: #f0f0f0;
+      font-family: 'Courier New', Courier, monospace;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    /* Header Controls */
+    .header-container {
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      text-align: center;
+      border-bottom: 2px solid #444;
+      padding-bottom: 1.5rem;
+    }
+
+    .header-container h1 {
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Global UI Toggle Bar */
+    .toggle-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: #1a1a1a;
+      border: 2px solid #fff;
+      padding: 0.75rem 1.5rem;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .toggle-label {
+      font-weight: bold;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    /* Switch Styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border: 1px solid #fff;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #fff;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+      background-color: #000;
+    }
+
+    /* Grid layout for Character Cards */
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #000;
+      border: 3px solid #fff;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .role {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    /* Visual Mask Display Container */
+    .mask-display {
+      height: 160px;
+      border: 2px dashed #444;
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      padding: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .mask-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .mask-title {
+      font-weight: bold;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .mask-desc {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 0.25rem;
+    }
+
+    .quote-box {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: #ddd;
+      border-top: 1px solid #333;
+      padding-top: 0.75rem;
+      margin-top: 0.75rem;
+    }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <h1>MAUS: MY FATHER BLEEDS HISTORY</h1>
-    <p class="subtitle">An Interactive Memory Mapping Experience</p>
-  </header>
-  <main class="app-container">
-    <section class="timeline-left">
-      <h2>REGO PARK, NEW YORK (PRESENT)</h2>
-      <article class="narrative-card active" data-memory="1939">
-        <span class="year-badge">1978</span>
-        <h3>Tape 1: Sorting Quarters</h3>
-        <p>Vladek sits at the table, obsessively counting his loose quarters while complaining about Mala. Artie adjusts his microphone, trying to steer the conversation back to Poland before the war.</p>
-        <p class="instruction">↓ Scroll down to unearth memory...</p>
-      </article>
-      <article class="narrative-card" data-memory="1942">
-        <span class="year-badge">1979</span>
-        <h3>Tape 2: The Exercise Bike</h3>
-        <p>Vladek pedals furiously on his stationary bike in a worn tank top, showing the tattoo on his arm: 175113. The boundary between his living room and the Sosnowiec ghetto begins to collapse.</p>
-        <p class="instruction">↓ Continue scrolling...</p>
-      </article>
-      <article class="narrative-card" data-memory="1944">
-        <span class="year-badge">1980</span>
-        <h3>Tape 3: Burning Sketches</h3>
-        <p>Artie searches for Anja's lost diaries. Vladek reluctantly admits he destroyed them after her death. The weight of trauma transfers permanently from father to son.</p>
-      </article>
-    </section>
-    <section class="timeline-right" id="memoryDisplay">
-      <div class="memory-content" id="memoryContent">
-        <span class="memory-tag">MEMOIR RECONSTRUCTION</span>
-        <h2 id="memoryTitle">POLAND, 1939</h2>
-        <div class="memory-illustration" id="memoryIllustration">
-          <p class="illustration-text">[ MOUSE MASK: SOSNOWIEC ]</p>
-        </div>
-        <p id="memoryText">"The war came fast. I was drafted into the Polish army. We didn't know what was coming with the Germans, but already the shadows were stretching over us."</p>
-      </div>
-    </section>
-  </main>
-  <script>
-    const memoryData = {
-      "1939": { title: "POLAND, 1939", text: '"The war came fast. I was drafted into the Polish army. We didn\'t know what was coming with the Germans, but already the shadows were stretching over us."', maskLabel: "[ MOUSE MASK: SOSNOWIEC ]" },
-      "1942": { title: "GHETTO ROUNDUP, 1942", text: '"They registered us all in the stadium. Some got stamps on their passports to work, others were taken directly to the trains. Anja and I survived by hiding in cellars under coal piles."', maskLabel: "[ PIG MASK: POLISH DISGUISE ]" },
-      "1944": { title: "AUSCHWITZ-BIRKENAU, 1944", text: '"We came in the night. The smoke from the chimneys... you could smell it before you saw it. Here, you were no longer a man. You were a number on your arm."', maskLabel: "[ CAT MASK: CAMPS ]" }
-    };
-    document.addEventListener("DOMContentLoaded", () => {
-      const cards = document.querySelectorAll(".narrative-card");
-      const memoryTitle = document.getElementById("memoryTitle");
-      const memoryText = document.getElementById("memoryText");
-      const memoryContent = document.getElementById("memoryContent");
-      const illustrationText = document.querySelector(".illustration-text");
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            cards.forEach((c) => c.classList.remove("active"));
-            entry.target.classList.add("active");
-            const memoryKey = entry.target.getAttribute("data-memory");
-            const data = memoryData[memoryKey];
-            if (data) {
-              memoryContent.style.opacity = 0;
-              setTimeout(() => {
-                memoryTitle.innerText = data.title;
-                memoryText.innerText = data.text;
-                illustrationText.innerText = data.maskLabel;
-                memoryContent.style.opacity = 1;
-              }, 200);
-            }
-          }
-        });
-      }, { threshold: 0.5 });
-      cards.forEach((card) => observer.observe(card));
-    });
-  </script>
-</body>
-</html>
+
+  <div class="header-container">
+    <h1>MAUS: THE MASK OF IDENTITY</h1>
+    <p class="subtitle">An Interactive Exploration of Spiegelman's Animal Metaphor</p>
+
+    <div class="toggle-bar">
+      <span class="toggle-label" id="labelLeft">ANIMAL METAPHOR</span>
+      <label class="switch">
+        <input type="checkbox" id="identityToggle">
+        <span class="slider"></span>
+      </label>
+      <span class="toggle-label" id="labelRight" style="color:#666;">HUMAN IDENTITY</span>
+    </div>
+  </div>
+
+  <main class="character-grid">
+
+    <article class="card">
+      <h2>VLADEK SPIEGELMAN</h2>
+      <p class="role">Protagonist / Survivor</p>
+      
+      <div class="mask-
+  

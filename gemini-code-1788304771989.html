@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maus: Bleeding History</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>MAUS: MY FATHER BLEEDS HISTORY</h1>
+    <p class="subtitle">An Interactive Memory Mapping Experience</p>
+  </header>
+
+  <main class="app-container">
+    
+    <section class="timeline-left">
+      <h2>REGO PARK, NEW YORK (PRESENT)</h2>
+
+      <article class="narrative-card" data-memory="1939">
+        <span class="year-badge">1978</span>
+        <h3>Tape 1: Sorting Quarters</h3>
+        <p>Vladek sits at the table, obsessively counting his loose quarters while complaining about Mala. Artie adjusts his microphone, trying to steer the conversation back to Poland before the war.</p>
+        <p class="instruction">↓ Scroll down to unearth memory...</p>
+      </article>
+
+      <article class="narrative-card" data-memory="1942">
+        <span class="year-badge">1979</span>
+        <h3>Tape 2: The Exercise Bike</h3>
+        <p>Vladek pedals furiously on his stationary bike in a worn tank top, showing the tattoo on his arm: 175113. The boundary between his living room and the Sosnowiec ghetto begins to collapse.</p>
+        <p class="instruction">↓ Continue scrolling...</p>
+      </article>
+
+      <article class="narrative-card" data-memory="1944">
+        <span class="year-badge">1980</span>
+        <h3>Tape 3: Burning Sketches</h3>
+        <p>Artie searches for Anja's lost diaries. Vladek reluctantly admits he destroyed them after her death. The weight of trauma transfers permanently from father to son.</p>
+      </article>
+
+    </section>
+
+    <section class="timeline-right" id="memoryDisplay">
+      <div class="memory-content" id="memoryContent">
+        <span class="memory-tag">MEMOIR RECONSTRUCTION</span>
+        <h2 id="memoryTitle">POLAND, 1939</h2>
+        <div class="memory-illustration" id="memoryIllustration">
+          <p class="illustration-text">[ MOUSE MASK APPLIED ]</p>
+        </div>
+        <p id="memoryText">"The war came fast. I was drafted into the Polish army. We didn't know what was coming with the Germans."</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

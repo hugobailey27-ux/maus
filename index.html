@@ -21,7 +21,7 @@
 
     /* Header Controls */
     .header-container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto 2rem auto;
       text-align: center;
       border-bottom: 2px solid #444;
@@ -51,7 +51,7 @@
       border: 2px solid #fff;
       padding: 0.75rem 1.5rem;
       width: fit-content;
-      margin: 0 auto;
+      margin: 0 auto 1rem auto;
     }
 
     .toggle-label {
@@ -103,13 +103,38 @@
       background-color: #000;
     }
 
-    /* Grid layout for Character Cards */
-    .character-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      max-width: 900px;
+    .scroll-instruction {
+      font-size: 0.8rem;
+      color: #aaa;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+
+    /* Horizontal Scroll Container for Animal Cards */
+    .scroll-wrapper {
+      max-width: 1000px;
       margin: 0 auto;
+      overflow-x: auto;
+      padding-bottom: 1.5rem;
+    }
+
+    /* Custom Scrollbar Styling */
+    .scroll-wrapper::-webkit-scrollbar {
+      height: 10px;
+    }
+    .scroll-wrapper::-webkit-scrollbar-track {
+      background: #111;
+      border: 1px solid #333;
+    }
+    .scroll-wrapper::-webkit-scrollbar-thumb {
+      background: #fff;
+    }
+
+    .character-grid {
+      display: flex;
+      gap: 1.5rem;
+      width: max-content;
+      padding: 0.5rem;
     }
 
     .card {
@@ -117,11 +142,12 @@
       border: 3px solid #fff;
       padding: 1.5rem;
       text-align: center;
-      position: relative;
+      width: 280px;
+      flex-shrink: 0;
     }
 
     .card h2 {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       margin-bottom: 0.2rem;
     }
 
@@ -144,7 +170,7 @@
       justify-content: center;
       background: #111;
       padding: 1rem;
-      transition: all 0.3s ease;
+      transition: opacity 0.2s ease;
     }
 
     .mask-icon {
@@ -154,7 +180,7 @@
 
     .mask-title {
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       letter-spacing: 1px;
     }
 
@@ -171,6 +197,7 @@
       border-top: 1px solid #333;
       padding-top: 0.75rem;
       margin-top: 0.75rem;
+      min-height: 80px;
     }
   </style>
 </head>
@@ -188,13 +215,50 @@
       </label>
       <span class="toggle-label" id="labelRight" style="color:#666;">HUMAN IDENTITY</span>
     </div>
+
+    <p class="scroll-instruction">← Scroll horizontally to explore different animals/nationalities →</p>
   </div>
 
-  <main class="character-grid">
+  <div class="scroll-wrapper">
+    <main class="character-grid">
 
-    <article class="card">
-      <h2>VLADEK SPIEGELMAN</h2>
-      <p class="role">Protagonist / Survivor</p>
-      
-      <div class="mask-
-  
+      <article class="card">
+        <h2>VLADEK SPIEGELMAN</h2>
+        <p class="role">Protagonist / Survivor</p>
+        
+        <div class="mask-display" id="mask-vladek">
+          <div class="mask-icon">🐭</div>
+          <div class="mask-title">[ MOUSE MASK ]</div>
+          <div class="mask-desc">Assigned Category: Jewish</div>
+        </div>
+
+        <p class="quote-box">"To speak of Auschwitz was impossible... I survived because I was clever, lucky, and adaptable."</p>
+      </article>
+
+      <article class="card">
+        <h2>THE GESTAPO</h2>
+        <p class="role">Persecutors / Occupiers</p>
+        
+        <div class="mask-display" id="mask-gestapo">
+          <div class="mask-icon">🐱</div>
+          <div class="mask-title">[ CAT MASK ]</div>
+          <div class="mask-desc">Assigned Category: German</div>
+        </div>
+
+        <p class="quote-box">Spiegelman renders the German soldiers as predatory cats chasing prey in a predator-versus-prey dynamic.</p>
+      </article>
+
+      <article class="card">
+        <h2>POLISH CITIZENS</h2>
+        <p class="role">Neighbors / Bystanders</p>
+        
+        <div class="mask-display" id="mask-poles">
+          <div class="mask-icon">🐷</div>
+          <div class="mask-title">[ PIG MASK ]</div>
+          <div class="mask-desc">Assigned Category: Polish</div>
+        </div>
+
+        <p class="quote-box">Vladek wears a physical pig mask strapped to his face to pass as a non-Jewish Pole in public.</p>
+      </article>
+
+      <article class

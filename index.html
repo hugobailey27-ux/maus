@@ -128,4 +128,180 @@
     padding:0;
     transition:background .2s ease, transform .2s ease;
   }
-  .dot:focus-visible{ outline:2px solid var(--red);
+  .dot:focus-visible{ outline:2px solid var(--red); outline-offset:3px; }
+  .dot.active{ background:var(--red); transform:scale(1.3); }
+
+  @media (max-width: 560px){
+    .frame{ width:min(58vh, 84vw); height:min(58vh, 84vw); }
+  }
+</style>
+</head>
+<body>
+
+<main class="scroller" id="scroller" tabindex="0" aria-label="Horizontally scrolling piece: a face receives a sequence of animal masks"></main>
+
+<div class="bottombar">
+  <button class="navbtn" id="prevBtn" aria-label="Previous">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="nextBtn" aria-label="Next">›</button>
+</div>
+
+<script>
+(function(){
+
+  const PAPER = "#E7E1D2", INK = "#211E1A", RED = "#9C2B22";
+
+  function baseFace(showEars){
+    return `
+      <path d="M60,378 L98,300 L202,300 L240,378 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <ellipse cx="150" cy="190" rx="92" ry="118" fill="${PAPER}" stroke="${INK}" stroke-width="5"/>
+      ${showEars ? `
+      <path d="M58,175 q-14,15 0,34" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>
+      <path d="M242,175 q14,15 0,34" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>` : ``}
+      <circle cx="118" cy="176" r="5" fill="${INK}"/>
+      <circle cx="182" cy="176" r="5" fill="${INK}"/>
+      <path d="M105,158 q13,-8 26,0" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M169,158 q13,-8 26,0" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M150,178 L144,206 L156,206 Z" fill="none" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M128,234 q22,13 44,0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>
+    `;
+  }
+
+  function svgWrap(maskLayer){
+    return `<svg viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
+      ${baseFace(!maskLayer)}
+      ${maskLayer ? `<g class="mask-layer">${maskLayer}</g>` : ``}
+    </svg>`;
+  }
+
+  const masks = {
+    mouse: `
+      <circle cx="88" cy="76" r="40" fill="${PAPER}" stroke="${INK}" stroke-width="5"/>
+      <circle cx="212" cy="76" r="40" fill="${PAPER}" stroke="${INK}" stroke-width="5"/>
+      <circle cx="88" cy="76" r="20" fill="none" stroke="${INK}" stroke-width="2.5"/>
+      <circle cx="212" cy="76" r="20" fill="none" stroke="${INK}" stroke-width="2.5"/>
+      <path d="M60,182 q90,-46 180,0 q-14,42 -90,42 q-76,0 -90,-42 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="150" cy="188" r="7" fill="${RED}"/>
+      <rect x="138" y="222" width="10" height="14" fill="${PAPER}" stroke="${INK}" stroke-width="2.5"/>
+      <rect x="152" y="222" width="10" height="14" fill="${PAPER}" stroke="${INK}" stroke-width="2.5"/>
+      <g stroke="${INK}" stroke-width="2" stroke-linecap="round">
+        <line x1="150" y1="188" x2="70" y2="172"/>
+        <line x1="150" y1="192" x2="66" y2="196"/>
+        <line x1="150" y1="196" x2="70" y2="216"/>
+        <line x1="150" y1="188" x2="230" y2="172"/>
+        <line x1="150" y1="192" x2="234" y2="196"/>
+        <line x1="150" y1="196" x2="230" y2="216"/>
+      </g>
+      <path d="M46,150 q-30,10 -34,44" fill="none" stroke="${INK}" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>
+      <path d="M254,150 q30,10 34,44" fill="none" stroke="${INK}" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>
+    `,
+    cat: `
+      <path d="M64,116 L96,26 L134,116 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M236,116 L204,26 L166,116 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M96,64 L112,102 L82,102 Z" fill="none" stroke="${INK}" stroke-width="2"/>
+      <path d="M204,64 L188,102 L218,102 Z" fill="none" stroke="${INK}" stroke-width="2"/>
+      <path d="M102,172 q16,-10 32,0 q-16,14 -32,0 Z" fill="${INK}"/>
+      <path d="M166,172 q16,-10 32,0 q-16,14 -32,0 Z" fill="${INK}"/>
+      <path d="M150,180 L142,198 L158,198 Z" fill="${RED}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M150,198 q0,14 -14,18 M150,198 q0,14 14,18" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>
+      <g stroke="${INK}" stroke-width="2" stroke-linecap="round">
+        <line x1="140" y1="204" x2="62" y2="196"/>
+        <line x1="140" y1="210" x2="60" y2="216"/>
+        <line x1="140" y1="216" x2="62" y2="236"/>
+        <line x1="160" y1="204" x2="238" y2="196"/>
+        <line x1="160" y1="210" x2="240" y2="216"/>
+        <line x1="160" y1="216" x2="238" y2="236"/>
+      </g>
+    `,
+    pig: `
+      <path d="M58,170 q-6,-40 44,-46 q10,26 -8,50 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M242,170 q6,-40 -44,-46 q-10,26 8,50 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <ellipse cx="150" cy="206" rx="34" ry="26" fill="${PAPER}" stroke="${INK}" stroke-width="5"/>
+      <ellipse cx="150" cy="206" rx="34" ry="26" fill="none" stroke="${RED}" stroke-width="2.5" stroke-dasharray="3 5"/>
+      <circle cx="139" cy="208" r="4.5" fill="${INK}"/>
+      <circle cx="161" cy="208" r="4.5" fill="${INK}"/>
+      <path d="M108,168 q42,-14 84,0" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    dog: `
+      <path d="M64,98 q-40,20 -34,120 q4,44 30,52 q-18,-70 4,-172 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M236,98 q40,20 34,120 q-4,44 -30,52 q18,-70 -4,-172 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M112,168 q38,-18 76,0 q10,50 -38,58 q-48,-8 -38,-58 Z" fill="${PAPER}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <ellipse cx="150" cy="196" rx="15" ry="11" fill="${RED}" stroke="${INK}" stroke-width="3"/>
+      <path d="M150,207 L150,224" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M126,232 q24,14 48,0" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    frog: `
+      <circle cx="102" cy="104" r="30" fill="${PAPER}" stroke="${INK}" stroke-width="5"/>
+      <circle cx="198" cy="104" r="30" fill="${PAPER}" stroke="${INK}" stroke-width="5"/>
+      <circle cx="102" cy="104" r="10" fill="${INK}"/>
+      <circle cx="198" cy="104" r="10" fill="${INK}"/>
+      <path d="M96,220 q54,26 108,0" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+      <path d="M104,222 q46,16 92,0" fill="none" stroke="${RED}" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="132" cy="150" r="3" fill="${INK}"/>
+      <circle cx="168" cy="150" r="3" fill="${INK}"/>
+    `
+  };
+
+  const sequence = [null, masks.mouse, masks.cat, masks.pig, masks.dog, masks.frog, null];
+
+  const scroller = document.getElementById('scroller');
+  const dotsWrap = document.getElementById('dots');
+
+  sequence.forEach((layer, i) => {
+    const panel = document.createElement('section');
+    panel.className = 'panel';
+    panel.innerHTML = `<div class="frame">${svgWrap(layer)}</div>`;
+    scroller.appendChild(panel);
+
+    const dot = document.createElement('button');
+    dot.className = 'dot';
+    dot.setAttribute('aria-label', 'Go to panel ' + (i + 1));
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  const panels = Array.from(document.querySelectorAll('.panel'));
+  const dots = Array.from(document.querySelectorAll('.dot'));
+  let current = 0;
+
+  function setActive(i){
+    current = i;
+    panels.forEach((p, idx) => p.classList.toggle('active', idx === i));
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+  }
+
+  function goTo(i){
+    i = Math.max(0, Math.min(panels.length - 1, i));
+    panels[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.6){
+        setActive(panels.indexOf(entry.target));
+      }
+    });
+  }, { root: scroller, threshold: [0.6] });
+
+  panels.forEach(p => observer.observe(p));
+  setActive(0);
+
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown'){ goTo(current + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ goTo(current - 1); e.preventDefault(); }
+  });
+
+  scroller.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+      scroller.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+})();
+</script>
+</body>
+</html>
